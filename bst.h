@@ -50,6 +50,8 @@ public:
     //                averageTime(n) is O(log n) and worstTime(n) is O(n).
     Iterator find(const T &item) const;
 
+    Iterator find_iner(Node* root, const T &item);  // Newly created, in order to make a recursive call for the find method.
+
     // Precondition: itr is positioned at an item in this BinSearchTree.
     // Postcondition: the item that itr is positioned at has been deleted from
     //                this BinSearchTree.  The averageTime(n) is O(log n)
@@ -131,10 +133,27 @@ void BinSearchTree<T>::printTree() {
 
 template<typename T>
 typename BinSearchTree<T>::Iterator BinSearchTree<T>::find(const T &item) const {
-    //not finished
-    return Iterator();
+    return find_iner(root, item);
 }
 
+template<typename T>
+typename BinSearchTree<T>::Iterator BinSearchTree<T>::find_iner(Node *node, const T &item) {
+
+    if (node == nullptr){
+        return end();
+    }
+
+    if (node->item < item){
+        return find_iner(node->right, item);
+    }
+
+    if (node->item > item){
+        return find_iner(node->left, item);
+    }
+
+    return new Iterator(node);  //when node->item "equals" item
+
+}
 
 template<typename T>
 void BinSearchTree<T>::erase(Iterator itr) {
