@@ -5,6 +5,7 @@
 #include <string>
 #include <iomanip>
 #include <stack>
+#include <queue>
 
 template<typename T>
 class BinSearchTree {
@@ -57,8 +58,7 @@ public:
     //                averageTime(n) is O(log n) and worstTime(n) is O(n).
     Iterator find(const T &item) const;
 
-    Iterator
-    find_iner(Node *node, const T &item);  // Newly created, in order to make a recursive call for the find method.
+    Iterator find_iner(Node *node, const T &item);  // Newly created, in order to make a recursive call for the find method.
 
     // Precondition: itr is positioned at an item in this BinSearchTree.
     // Postcondition: the item that itr is positioned at has been deleted from
@@ -72,6 +72,8 @@ public:
 
     // Postcondition: The tree-shape of this BinSearchTree has been printed
     void printTree();
+
+    void Traversal(Node* node);
 
     class Iterator {
         friend class BinSearchTree<T>;
@@ -130,7 +132,7 @@ int BinSearchTree<T>::size() const {
 
 template<typename T>
 int BinSearchTree<T>::height() const {
-    //Please implement this!
+
 }
 
 template<typename T>
@@ -158,11 +160,11 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::insert_iner(Node *node, co
         insert_iner(node->left, item);
     }
 
-
 }
 
 template<typename T>
 typename BinSearchTree<T>::Node *BinSearchTree<T>::createLeaf(Node *parentNode, const T &item) {
+
     Node *newItem = new Node();
     newItem->item = item;
     if (parentNode == nullptr) {
@@ -183,10 +185,40 @@ typename BinSearchTree<T>::Node *BinSearchTree<T>::createLeaf(Node *parentNode, 
 
 }
 
-
 template<typename T>
 void BinSearchTree<T>::printTree() {
-    //Please implement this!
+    Traversal(this->root);
+}
+
+template<typename T>
+void BinSearchTree<T>::Traversal(Node* node) {
+    if (node == nullptr){
+        return;
+    }
+
+    std::queue<std::pair<Node*, int>> queue;
+    queue.push({root, 0});
+
+    while (!queue.empty()){
+        std::pair<Node*, int> current_pair = queue.front();
+        Node* current_node = current_pair.first;
+        int level = current_pair.second;
+        queue.pop();
+
+        for (int i = 0; i < level; ++i) {
+            std::cout << "  ";
+        }
+        std::cout << current_node->item;
+        std::cout << "   level: "<< current_pair.second << std::endl;
+
+        if (current_node->left != nullptr){
+            queue.push({current_node->left, level + 1});
+        }
+
+        if (current_node->right != nullptr){
+            queue.push({current_node->right, level + 1});
+        }
+    }
 }
 
 template<typename T>
@@ -220,7 +252,10 @@ void BinSearchTree<T>::erase(Iterator itr) {
 
 template<typename T>
 BinSearchTree<T>::~BinSearchTree() {
-    //Please implement this!
+    /*Iterator iterator;
+    for (iterator = this->root; iterator == this->end(); iterator++) {
+        erase(iterator);
+    }*/
 }
 
 template<typename T>
@@ -264,8 +299,7 @@ T &BinSearchTree<T>::Iterator::operator*() const {
 
 template<typename T>
 bool BinSearchTree<T>::Iterator::operator==(const Iterator &otherIterator) const {
-    //not finished
-    return false;
+    return this->curr->item == otherIterator.curr->item;
 }
 
 
