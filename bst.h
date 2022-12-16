@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <stack>
 
 template<typename T>
 class BinSearchTree {
@@ -20,6 +21,8 @@ private:
     Node *root;
 
     int count;
+
+    Node *lastNode;
 
 public:
 
@@ -43,6 +46,10 @@ public:
     //                averageTime(n) is O(log n) and worstTime(n) is O(n).
     Iterator insert(const T &item);
 
+    Iterator insert_iner(Node *node, const T &item);
+
+    Node *createLeaf(Node *parentNode, const T &item);
+
     // Postcondition: if there is an item in this BinSearchTree that equals item,
     //                the value returned is an iterator pointing to that item.
     //                Otherwise, the value returned is an iterator with the same
@@ -50,7 +57,8 @@ public:
     //                averageTime(n) is O(log n) and worstTime(n) is O(n).
     Iterator find(const T &item) const;
 
-    Iterator find_iner(Node* root, const T &item);  // Newly created, in order to make a recursive call for the find method.
+    Iterator
+    find_iner(Node *node, const T &item);  // Newly created, in order to make a recursive call for the find method.
 
     // Precondition: itr is positioned at an item in this BinSearchTree.
     // Postcondition: the item that itr is positioned at has been deleted from
@@ -101,19 +109,23 @@ public:
     //                position just before the position of the iterator returned.
     Iterator end();
 
-}; // BinSearchTree
+};
+
+
+// BinSearchTree
 
 
 
 //************************the following is the implmentation of the bst class interfaces***********************************
 template<typename T>
 BinSearchTree<T>::BinSearchTree() {
-    //Please implement this!
+    this->root = nullptr;
+    this->count = 0;
 }
 
 template<typename T>
 int BinSearchTree<T>::size() const {
-    //Please implement this!
+    return this->count;
 }
 
 template<typename T>
@@ -123,8 +135,54 @@ int BinSearchTree<T>::height() const {
 
 template<typename T>
 typename BinSearchTree<T>::Iterator BinSearchTree<T>::insert(const T &item) {
-    //Please implement this!
+    return insert_iner(this->root, item);
 }
+
+template<typename T>
+typename BinSearchTree<T>::Iterator BinSearchTree<T>::insert_iner(Node *node, const T &item) {
+
+    if (node == nullptr) {
+        if (count == 0) {
+            return createLeaf(node, item);
+        }
+        return createLeaf(lastNode, item);
+    }
+
+    if (node->item < item) {
+        lastNode = node;
+        insert_iner(node->right, item);
+    }
+
+    if (node->item > item) {
+        lastNode = node;
+        insert_iner(node->left, item);
+    }
+
+
+}
+
+template<typename T>
+typename BinSearchTree<T>::Node *BinSearchTree<T>::createLeaf(Node *parentNode, const T &item) {
+    Node *newItem = new Node();
+    newItem->item = item;
+    if (parentNode == nullptr) {
+        this->root = newItem;
+    } else {
+        if (parentNode->item < item) {
+            parentNode->right = newItem;
+        } else {
+            parentNode->left = newItem;
+        }
+        newItem->parent = parentNode;
+    }
+    newItem->left = nullptr;
+    newItem->right = nullptr;
+    this->count++;
+
+    return newItem;
+
+}
+
 
 template<typename T>
 void BinSearchTree<T>::printTree() {
@@ -139,15 +197,15 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::find(const T &item) const 
 template<typename T>
 typename BinSearchTree<T>::Iterator BinSearchTree<T>::find_iner(Node *node, const T &item) {
 
-    if (node == nullptr){
+    if (node == nullptr) {
         return end();
     }
 
-    if (node->item < item){
+    if (node->item < item) {
         return find_iner(node->right, item);
     }
 
-    if (node->item > item){
+    if (node->item > item) {
         return find_iner(node->left, item);
     }
 
