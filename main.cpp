@@ -12,11 +12,12 @@ int main(){
     tree.insert(70);
     tree.insert(91);
     tree.insert(30);
+    tree.insert(30);
 
     tree.printTree();
 
-    //tree.find(30);
+    tree.find(30);
 
-
+    std::getchar();
     return 0;
 }

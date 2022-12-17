@@ -144,9 +144,9 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::insert_iner(Node *node, co
 
     if (node == nullptr) {
         if (count == 0) {
-            return createLeaf(node, item);
+            return Iterator(createLeaf(node, item));
         }
-        return createLeaf(lastNode, item);
+        return Iterator(createLeaf(lastNode, item));
     }
 
     if (node->item < item) {
@@ -158,6 +158,8 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::insert_iner(Node *node, co
         lastNode = node;
         insert_iner(node->left, item);
     }
+
+    return Iterator(node);
 
 }
 
