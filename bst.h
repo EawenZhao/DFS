@@ -386,13 +386,11 @@ BinSearchTree<T>::Iterator::Iterator() {
 
 template<typename T>
 typename BinSearchTree<T>::Iterator &BinSearchTree<T>::Iterator::operator++() {
-    //not finished
     return Iterator();
 }
 
 template<typename T>
 typename BinSearchTree<T>::Iterator &BinSearchTree<T>::Iterator::operator--() {
-    //not finished
     return Iterator();
 }
 
