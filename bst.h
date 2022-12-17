@@ -24,6 +24,7 @@ private:
 
     Node *lastNode;
 
+
 public:
 
     class Iterator; //very important!!!
@@ -41,6 +42,8 @@ public:
     //                has been returned.
     int height() const;
 
+    int height_iner(Node *node) const;
+
     // Postcondition: item has been inserted into this BinSearchTree. An iterator
     //                positioned at the inserted item has been returned. The
     //                averageTime(n) is O(log n) and worstTime(n) is O(n).
@@ -57,13 +60,15 @@ public:
     //                averageTime(n) is O(log n) and worstTime(n) is O(n).
     Iterator find(const T &item) const;
 
-    Iterator find_iner(Node *node, const T &item) const;  // Newly created, in order to make a recursive call for the find method.
+    Iterator find_iner(Node *node,
+                       const T &item) const;  // Newly created, in order to make a recursive call for the find method.
 
     // Precondition: itr is positioned at an item in this BinSearchTree.
     // Postcondition: the item that itr is positioned at has been deleted from
     //                this BinSearchTree.  The averageTime(n) is O(log n)
     //                and worstTime(n) is O(n).
     void erase(Iterator itr);
+
 
     // Postcondition: The space allocated for this BinSearchTree has been
     //                deallocated.  The worstTime(n) is O(n).
@@ -72,7 +77,7 @@ public:
     // Postcondition: The tree-shape of this BinSearchTree has been printed
     void printTree();
 
-    void Traversal(Node* node);
+    void Traversal(Node *node);
 
     class Iterator {
         friend class BinSearchTree<T>;
@@ -131,7 +136,29 @@ int BinSearchTree<T>::size() const {
 
 template<typename T>
 int BinSearchTree<T>::height() const {
+    return height_iner(this->root);
+}
 
+template<typename T>
+int BinSearchTree<T>::height_iner(Node *node) const {
+    static int level_l = 0;
+    static int level_r = 0;
+
+    if (node == nullptr) {
+        return 0;
+    }
+
+    if (node->left != nullptr) {
+        level_l++;
+        height_iner(node->left);
+    }
+
+    if (node->right != nullptr) {
+        level_r++;
+        height_iner(node->right);
+    }
+
+    return std::max(level_l, level_r);
 }
 
 template<typename T>
@@ -192,17 +219,17 @@ void BinSearchTree<T>::printTree() {
 }
 
 template<typename T>
-void BinSearchTree<T>::Traversal(Node* node) {
-    if (node == nullptr){
+void BinSearchTree<T>::Traversal(Node *node) {
+    if (node == nullptr) {
         return;
     }
 
-    std::queue<std::pair<Node*, int>> queue;
+    std::queue<std::pair<Node *, int>> queue;
     queue.push({root, 0});
 
-    while (!queue.empty()){
-        std::pair<Node*, int> current_pair = queue.front();
-        Node* current_node = current_pair.first;
+    while (!queue.empty()) {
+        std::pair<Node *, int> current_pair = queue.front();
+        Node *current_node = current_pair.first;
         int level = current_pair.second;
 
 
@@ -210,21 +237,21 @@ void BinSearchTree<T>::Traversal(Node* node) {
             std::cout << "  ";
         }
         std::cout << current_node->item;
-        std::cout << "   level: "<< current_pair.second << std::endl;
+        std::cout << "   level: " << current_pair.second << std::endl;
         queue.pop();
 
-        if (current_node->left != nullptr){
+        if (current_node->left != nullptr) {
             queue.push({current_node->left, level + 1});
         }
 
-        if (current_node->right != nullptr){
+        if (current_node->right != nullptr) {
             queue.push({current_node->right, level + 1});
         }
     }
 }
 
 template<typename T>
-typename BinSearchTree<T>::Iterator BinSearchTree<T>::find(const T &item) const{
+typename BinSearchTree<T>::Iterator BinSearchTree<T>::find(const T &item) const {
     return find_iner(root, item);
 }
 
@@ -249,8 +276,75 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::find_iner(Node *node, cons
 
 template<typename T>
 void BinSearchTree<T>::erase(Iterator itr) {
-    //not finished
+    Node *erasing = itr.curr;
+    if (erasing == nullptr) {
+        return;
+    }
+
+    //case 1 : The node is a leaf
+    if (erasing->left == nullptr && erasing->right == nullptr) {
+        if (erasing->parent != nullptr) {
+            if (erasing->parent->left == erasing)
+                erasing->parent->left = nullptr;   //设置父亲节点的left/right为空
+            else
+                erasing->parent->right = nullptr;
+        } else {
+            root = nullptr;
+        }
+        delete erasing;
+    }
+
+        //case 2 : The node has one left child
+    else if (erasing->left != nullptr && erasing->right == nullptr) {
+        erasing->left->parent = erasing->parent;
+        if (erasing->parent != nullptr) {
+            if (erasing->parent->left == erasing)
+                erasing->parent->left = erasing->left;
+            else
+                erasing->parent->right = erasing->left;
+        } else {
+            root = erasing->left;
+        }
+        delete erasing;
+    }
+
+        //case 3 : node has one right child
+
+    else if (erasing->left == nullptr && erasing->right != nullptr) {
+        erasing->right->parent = erasing->parent;
+        if (erasing->parent != nullptr) {
+            if (erasing->parent->left == erasing)
+                erasing->parent->left = erasing->right;
+            else
+                erasing->parent->right = erasing->right;
+        } else {
+            root = erasing->right;
+        }
+        delete erasing;
+    }
+
+        //case 4 : the node has 2 children
+    else {
+        Node *replacement = erasing->left;
+        while (replacement->right != nullptr) {  //中序遍历并找到删除节点左子树的最右子树，即为上一个节点(次大)
+            replacement = replacement->right;
+        }
+        erasing->item = replacement->item;  //把item复制过来
+
+        if (replacement->left != nullptr) {
+            replacement->left->parent = replacement->parent;
+        }  //中部位置替换节点（有左子节点）
+
+        if (replacement->parent->left == replacement)  //真正叶节点
+            replacement->parent->left = nullptr;
+        else
+            replacement->parent->right = nullptr;
+
+        delete replacement;
+    }
+    this->count--;
 }
+
 
 template<typename T>
 BinSearchTree<T>::~BinSearchTree() {
@@ -262,14 +356,22 @@ BinSearchTree<T>::~BinSearchTree() {
 
 template<typename T>
 typename BinSearchTree<T>::Iterator BinSearchTree<T>::begin() {
-    //not finished
-    return Iterator();
+    Node* current = root;
+
+    if (current == nullptr){
+        return end();
+    }
+
+    while (current->left != nullptr){
+        current = current->left;
+    }
+
+    return Iterator(current);
 }
 
 template<typename T>
-typename BinSearchTree<T>::Iterator BinSearchTree<T>::end() const{
-    //not finished
-    return Iterator();
+typename BinSearchTree<T>::Iterator BinSearchTree<T>::end() const {
+    return Iterator(nullptr);
 }
 
 //************************the following is the implmentation of the iterator inner class***********************************
