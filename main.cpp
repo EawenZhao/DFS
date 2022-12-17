@@ -1,30 +1,33 @@
 #include <iostream>
 #include <string>
 #include "bst.h"
+#include <random>
+#include <ctime>
+#include <cstdlib>
+#include <queue>
 
-using namespace std;
 
 int main() {
-    BinSearchTree<int> tree;
 
-    tree.insert(85);
-    tree.insert(70);
-    tree.insert(91);
-    tree.insert(30);
-    tree.insert(80);
-    tree.insert(15);
-    tree.insert(37);
+    int num = 0;
+    BinSearchTree<int> binSearchTree;
+    std::srand((int) std::time(NULL));
+    std::queue<int> randomQueue;
+    std::cout << "Please enter the amount of numbers :" << std::endl;
+    std::cin >> num;
 
-    tree.printTree();
+    for (int i = 0; i < num; i++) {
+        randomQueue.push(std::rand() % 100);
+    }
+    for (int i = 0; i < num; i++) {
+        binSearchTree.insert(randomQueue.front());
+        randomQueue.pop();
+    }
 
-    BinSearchTree<int>::Iterator itr = tree.find(85);
-    tree.erase(itr);
-    BinSearchTree<int>::Iterator itr2 = tree.find(15);
-    tree.erase(itr2);
-    itr2 = tree.find(37);
-    tree.erase(itr2);
     std::cout << std::endl;
-    tree.printTree();
-    std::getchar();
+    //binSearchTree.printTree();
+    std::cout << "The height of th tree is :" << binSearchTree.height() << std::endl;
+
+
     return 0;
 }
