@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include <stack>
 #include <queue>
 
 template<typename T>
@@ -58,7 +57,7 @@ public:
     //                averageTime(n) is O(log n) and worstTime(n) is O(n).
     Iterator find(const T &item) const;
 
-    Iterator find_iner(Node *node, const T &item);  // Newly created, in order to make a recursive call for the find method.
+    Iterator find_iner(Node *node, const T &item) const;  // Newly created, in order to make a recursive call for the find method.
 
     // Precondition: itr is positioned at an item in this BinSearchTree.
     // Postcondition: the item that itr is positioned at has been deleted from
@@ -109,7 +108,7 @@ public:
     //                comparison for ending the traversal of this BinSearchTree.
     //                If this BinSearchTree is non-empty, the largest item is in the
     //                position just before the position of the iterator returned.
-    Iterator end();
+    Iterator end() const;
 
 };
 
@@ -203,13 +202,14 @@ void BinSearchTree<T>::Traversal(Node* node) {
         std::pair<Node*, int> current_pair = queue.front();
         Node* current_node = current_pair.first;
         int level = current_pair.second;
-        queue.pop();
+
 
         for (int i = 0; i < level; ++i) {
             std::cout << "  ";
         }
         std::cout << current_node->item;
         std::cout << "   level: "<< current_pair.second << std::endl;
+        queue.pop();
 
         if (current_node->left != nullptr){
             queue.push({current_node->left, level + 1});
@@ -222,12 +222,12 @@ void BinSearchTree<T>::Traversal(Node* node) {
 }
 
 template<typename T>
-typename BinSearchTree<T>::Iterator BinSearchTree<T>::find(const T &item) const {
+typename BinSearchTree<T>::Iterator BinSearchTree<T>::find(const T &item) const{
     return find_iner(root, item);
 }
 
 template<typename T>
-typename BinSearchTree<T>::Iterator BinSearchTree<T>::find_iner(Node *node, const T &item) {
+typename BinSearchTree<T>::Iterator BinSearchTree<T>::find_iner(Node *node, const T &item) const {
 
     if (node == nullptr) {
         return end();
@@ -241,7 +241,7 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::find_iner(Node *node, cons
         return find_iner(node->left, item);
     }
 
-    return new Iterator(node);  //when node->item "equals" item
+    return Iterator(node);  //when node->item "equals" item
 
 }
 
@@ -265,7 +265,7 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::begin() {
 }
 
 template<typename T>
-typename BinSearchTree<T>::Iterator BinSearchTree<T>::end() {
+typename BinSearchTree<T>::Iterator BinSearchTree<T>::end() const{
     //not finished
     return Iterator();
 }

@@ -15,6 +15,8 @@ int main(){
 
     tree.printTree();
 
+    //tree.find(30);
+
 
     return 0;
 }
