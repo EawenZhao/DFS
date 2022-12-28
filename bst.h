@@ -179,14 +179,14 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::insert_iner(Node *node, co
         node->left = insert_iner(node->left, item).curr;
     }
 
-    return Iterator(node);   //equals
+    return Iterator(node);   //equals, won't insert anything
 
 }
 
 template<typename T>
 typename BinSearchTree<T>::Node *BinSearchTree<T>::createLeaf(Node *parentNode, const T &item) {
 
-    Node *newItem = new Node();
+    Node *newItem = new Node();  // on the heap
     newItem->item = item;
 
     if (this->count == 0) {

@@ -9,7 +9,7 @@
 int main() {
 
     int num = 0;
-    std::srand( std::time(0));
+    std::srand( std::time(nullptr));
     BinSearchTree<double> binSearchTree;
     std::queue<double> randomQueue;
     std::cout << "Please enter the amount of numbers :" << std::endl;
