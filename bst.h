@@ -20,7 +20,7 @@ private:
 
     Node *root;
 
-    int count;
+    int count{};
 
 
 public:
@@ -123,8 +123,8 @@ public:
 //************************the following is the implmentation of the bst class interfaces***********************************
 template<typename T>
 BinSearchTree<T>::BinSearchTree() {
-    this->root = nullptr;
-    this->count = 0;
+    root = nullptr;
+    count = 0;
 }
 
 template<typename T>
