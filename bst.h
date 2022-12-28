@@ -22,8 +22,6 @@ private:
 
     int count;
 
-    Node *lastNode;
-
 
 public:
 
@@ -68,7 +66,6 @@ public:
     //                this BinSearchTree.  The averageTime(n) is O(log n)
     //                and worstTime(n) is O(n).
     void erase(Iterator itr);
-
 
 
     // Postcondition: The space allocated for this BinSearchTree has been
@@ -171,23 +168,18 @@ template<typename T>
 typename BinSearchTree<T>::Iterator BinSearchTree<T>::insert_iner(Node *node, const T &item) {
 
     if (node == nullptr) {
-        if (count == 0) {
-            return Iterator(createLeaf(node, item));
-        }
-        return Iterator(createLeaf(lastNode, item));
+        return Iterator(createLeaf(node, item));
     }
 
     if (node->item < item) {
-        lastNode = node;
-        insert_iner(node->right, item);
+        node->right = insert_iner(node->right, item).curr;
     }
 
     if (node->item > item) {
-        lastNode = node;
-        insert_iner(node->left, item);
+        node->left = insert_iner(node->left, item).curr;
     }
 
-    return Iterator(node);
+    return Iterator(node);   //equals
 
 }
 
@@ -196,16 +188,13 @@ typename BinSearchTree<T>::Node *BinSearchTree<T>::createLeaf(Node *parentNode, 
 
     Node *newItem = new Node();
     newItem->item = item;
-    if (parentNode == nullptr) {
+
+    if (this->count == 0) {
         this->root = newItem;
     } else {
-        if (parentNode->item < item) {
-            parentNode->right = newItem;
-        } else {
-            parentNode->left = newItem;
-        }
         newItem->parent = parentNode;
     }
+
     newItem->left = nullptr;
     newItem->right = nullptr;
     this->count++;
@@ -357,13 +346,13 @@ BinSearchTree<T>::~BinSearchTree() {
 
 template<typename T>
 typename BinSearchTree<T>::Iterator BinSearchTree<T>::begin() {
-    Node* current = root;
+    Node *current = root;
 
-    if (current == nullptr){
+    if (current == nullptr) {
         return end();
     }
 
-    while (current->left != nullptr){
+    while (current->left != nullptr) {
         current = current->left;
     }
 
