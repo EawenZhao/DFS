@@ -26,7 +26,7 @@ int main() {
 
     std::cout << std::endl;
     binSearchTree.printTree();
-    std::cout << "The height of th tree is :" << binSearchTree.height() << std::endl;
+    std::cout << "The height of the tree is :" << binSearchTree.height() << std::endl;
 
 
     return 0;
