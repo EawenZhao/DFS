@@ -173,10 +173,12 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::insert_iner(Node *node, co
 
     if (node->item < item) {
         node->right = insert_iner(node->right, item).curr;
+        node->right->parent = node;
     }
 
     if (node->item > item) {
         node->left = insert_iner(node->left, item).curr;
+        node->left->parent = node;
     }
 
     return Iterator(node);   //equals, won't insert anything

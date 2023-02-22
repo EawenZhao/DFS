@@ -1,28 +1,17 @@
 #include <iostream>
-#include <string>
-#include <ctime>
-#include <cstdlib>
 #include <queue>
 #include "bst.h"
 
 
 int main() {
+    BinSearchTree<std::string> binSearchTree;
 
-    int num = 0;
-    std::srand( std::time(nullptr));
-    BinSearchTree<double> binSearchTree;
-    std::queue<double> randomQueue;
-    std::cout << "Please enter the amount of numbers :" << std::endl;
-    std::cin >> num;
+    binSearchTree.insert("Red");
+    binSearchTree.insert("Blue");
+    binSearchTree.insert("White");
+    binSearchTree.insert("Grey");
+    binSearchTree.insert("Brown");
 
-    for (int i = 0; i < num; i++) {
-        long big_randnum = (rand() << 15) + rand();
-        randomQueue.push(big_randnum);
-    }
-    for (int i = 0; i < num; i++) {
-        binSearchTree.insert(randomQueue.front());
-        randomQueue.pop();
-    }
 
     std::cout << std::endl;
     binSearchTree.printTree();
@@ -31,3 +20,47 @@ int main() {
 
     return 0;
 }
+
+
+//#include <iostream>
+//#include <queue>
+//using namespace std;
+//
+//struct Node{
+//    int val;
+//    Node* left;
+//    Node* right;
+//    Node(int x): val(x), left(NULL), right(NULL) {}
+//};
+//
+//void bfs(Node* root){
+//    queue<Node*> q;
+//    q.push(root);
+//
+//    while(!q.empty()){
+//        Node* current = q.front();
+//        cout << current->val << " " << endl;
+//        q.pop();
+//
+//        if(current->left != NULL){
+//            q.push(current->left);
+//        }
+//        if(current->right != NULL){
+//            q.push(current->right);
+//        }
+//    }
+//}
+//
+//int main(){
+//    Node* root = new Node(5);
+//    root->left = new Node(3);
+//    root->right = new Node(7);
+//    root->left->left = new Node(2);
+//    root->left->right = new Node(4);
+//    root->right->left = new Node(6);
+//    root->right->right = new Node(8);
+//
+//    bfs(root);
+//
+//    return 0;
+//}
