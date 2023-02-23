@@ -139,25 +139,16 @@ int BinSearchTree<T>::height() const {
 
 template<typename T>
 int BinSearchTree<T>::height_iner(Node *node) const {
-    static int level_l = 0;
-    static int level_r = 0;
-
     if (node == nullptr) {
         return 0;
     }
 
-    if (node->left != nullptr) {
-        level_l++;
-        height_iner(node->left);
-    }
+    int left_height = height_iner(node->left);
+    int right_height = height_iner(node->right);
 
-    if (node->right != nullptr) {
-        level_r++;
-        height_iner(node->right);
-    }
-
-    return std::max(level_l, level_r);
+    return std::max(left_height, right_height) + 1;
 }
+
 
 template<typename T>
 typename BinSearchTree<T>::Iterator BinSearchTree<T>::insert(const T &item) {
