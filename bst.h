@@ -134,7 +134,7 @@ int BinSearchTree<T>::size() const {
 
 template<typename T>
 int BinSearchTree<T>::height() const {
-    return height_iner(this->root);
+    return height_iner(this->root) - 1;
 }
 
 template<typename T>
@@ -144,6 +144,7 @@ int BinSearchTree<T>::height_iner(Node *node) const {
     }
 
     int left_height = height_iner(node->left);
+
     int right_height = height_iner(node->right);
 
     return std::max(left_height, right_height) + 1;
@@ -245,13 +246,14 @@ typename BinSearchTree<T>::Iterator BinSearchTree<T>::find_iner(Node *node, cons
         return end();
     }
 
+    if (node->item > item) {
+        return find_iner(node->left, item);
+    }
+
     if (node->item < item) {
         return find_iner(node->right, item);
     }
 
-    if (node->item > item) {
-        return find_iner(node->left, item);
-    }
 
     return Iterator(node);  //when node->item "equals" item
 
@@ -386,6 +388,7 @@ template<typename T>
 bool BinSearchTree<T>::Iterator::operator==(const Iterator &otherIterator) const {
     return this->curr->item == otherIterator.curr->item;
 }
+
 
 
 #endif

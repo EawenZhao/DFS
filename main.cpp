@@ -4,18 +4,18 @@
 
 
 int main() {
-    BinSearchTree<std::string> binSearchTree;
+    BinSearchTree<int> binSearchTree;
 
-    binSearchTree.insert("Red");
-    binSearchTree.insert("Blue");
-    binSearchTree.insert("White");
-    binSearchTree.insert("Grey");
-    binSearchTree.insert("Brown");
+    binSearchTree.insert(2);
+    binSearchTree.insert(6);
+    binSearchTree.insert(3);
+    binSearchTree.insert(8);
+    binSearchTree.insert(10);
 
 
     std::cout << std::endl;
     binSearchTree.printTree();
-    std::cout << "The height of the tree is :" << binSearchTree.height() << std::endl;
+    std::cout << "The height of the tree is : " << binSearchTree.height() << std::endl;
 
 
     return 0;
